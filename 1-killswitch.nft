@@ -1,0 +1,57 @@
+#!/usr/sbin/nft -f
+
+# So how do we start?
+# First of all, something risky:
+# Let's get rid of every previous NFT setting.
+flush ruleset
+
+# We start by making a table.
+table inet MyTable {
+
+        # This table is inet, which means it takes care
+        # for both IPv4 and IPv6 traffic.
+        # See: <https://wiki.nftables.org/wiki-nftables/index.php/Configuring_tables>
+
+        # After a table has been created,
+        # Let's make our first chain.
+        # To learn more about chains, see: <https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains>
+
+        # Our first chain will be a base chain.
+        chain FirstChain {
+
+                # So this chain, as this table, will be filtering both IPv4 and IPv6.
+
+                # This chain is not a regular chain.
+                # As a base chain, it requires type.
+                # the type of the chain defines what it is going to do.
+
+                # The following says:
+                # Filter the input,
+                # No need for high priority,
+                # and drop every input
+                # and drop every input                                                                           
+                type filter \                                                                                    
+                hook input \                                                                                     
+                priority 0;                                                                                      
+                policy drop;                                                                                     
+                # In other words, this blocks internet connection.                                               
+                                                                                                                 
+                                                                                                                 
+        }                                                                                                        
+                                                                                                                 
+        chain SecondChain {                                                                                      
+                                                                                     
+                # The first chain blocks internet input,                             
+                # which means no one can send packets to this device.                
+                # But what if we want to block internet entirely?                    
+                # So in this one:                                                    
+                type filter \                                          
+                hook output \                                          
+                priority 0;                                            
+                policy drop;                                           
+                # In other words, the second chain blocks packets    
+                # even from getting out of the system.               
+                                                                     
+        }                                                            
+                                                                     
+}
